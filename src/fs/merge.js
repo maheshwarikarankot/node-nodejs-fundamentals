@@ -2,9 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-export function merge(workspaceDir, files = null) {
+export async function merge(workspaceDir, files = null) {
   const partsDir = path.join(path.resolve(workspaceDir), 'parts');
-  if (!fs.existsSync(partsDir)) {
+  try {
+    await fs.promises.access(partsDir);
+  } catch {
     throw new Error('FS operation failed');
   }
   let filesToMerge;
@@ -12,23 +14,30 @@ export function merge(workspaceDir, files = null) {
     filesToMerge = files;
     for (const f of filesToMerge) {
       const filePath = path.join(partsDir, f);
-      if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+      let stat;
+      try {
+        stat = await fs.promises.stat(filePath);
+      } catch {
+        throw new Error('FS operation failed');
+      }
+      if (!stat.isFile()) {
         throw new Error('FS operation failed');
       }
     }
   } else {
-    filesToMerge = fs
-      .readdirSync(partsDir)
-      .filter((f) => path.extname(f) === '.txt')
-      .sort();
+    const allFiles = await fs.promises.readdir(partsDir);
+    filesToMerge = allFiles.filter((f) => path.extname(f) === '.txt').sort();
     if (filesToMerge.length === 0) {
       throw new Error('FS operation failed');
     }
   }
-  const content = filesToMerge
-    .map((f) => fs.readFileSync(path.join(partsDir, f), 'utf8'))
-    .join('');
-  fs.writeFileSync(path.join(path.resolve(workspaceDir), 'merged.txt'), content);
+  const parts = await Promise.all(
+    filesToMerge.map((f) => fs.promises.readFile(path.join(partsDir, f), 'utf8'))
+  );
+  await fs.promises.writeFile(
+    path.join(path.resolve(workspaceDir), 'merged.txt'),
+    parts.join('')
+  );
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

@@ -2,17 +2,17 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-function scanDir(dir, rootPath, entries) {
-  const items = fs.readdirSync(dir);
+async function scanDir(dir, rootPath, entries) {
+  const items = await fs.promises.readdir(dir);
   for (const item of items) {
     const fullPath = path.join(dir, item);
     const relPath = path.relative(rootPath, fullPath);
-    const stat = fs.statSync(fullPath);
+    const stat = await fs.promises.stat(fullPath);
     if (stat.isDirectory()) {
       entries.push({ path: relPath, type: 'directory' });
-      scanDir(fullPath, rootPath, entries);
+      await scanDir(fullPath, rootPath, entries);
     } else {
-      const content = fs.readFileSync(fullPath);
+      const content = await fs.promises.readFile(fullPath);
       entries.push({
         path: relPath,
         type: 'file',
@@ -23,16 +23,22 @@ function scanDir(dir, rootPath, entries) {
   }
 }
 
-export function writeSnapshot(workspaceDir) {
+export async function writeSnapshot(workspaceDir) {
   const absWorkspace = path.resolve(workspaceDir);
-  if (!fs.existsSync(absWorkspace) || !fs.statSync(absWorkspace).isDirectory()) {
+  let stat;
+  try {
+    stat = await fs.promises.stat(absWorkspace);
+  } catch {
+    throw new Error('FS operation failed');
+  }
+  if (!stat.isDirectory()) {
     throw new Error('FS operation failed');
   }
   const entries = [];
-  scanDir(absWorkspace, absWorkspace, entries);
+  await scanDir(absWorkspace, absWorkspace, entries);
   const snapshot = { rootPath: absWorkspace, entries };
   const snapshotPath = path.join(path.dirname(absWorkspace), 'snapshot.json');
-  fs.writeFileSync(snapshotPath, JSON.stringify(snapshot, null, 2));
+  await fs.promises.writeFile(snapshotPath, JSON.stringify(snapshot, null, 2));
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
