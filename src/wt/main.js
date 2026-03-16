@@ -1,3 +1,8 @@
+import fs from 'fs/promises';
+import path from 'path';
+import os from 'os';
+import { Worker } from 'worker_threads';
+
 const main = async () => {
   // Write your code here
   // Read data.json containing array of numbers
@@ -6,11 +11,6 @@ const main = async () => {
   // Collect sorted chunks
   // Merge using k-way merge algorithm
   // Log final sorted array
-
-  const fs      = await import('fs/promises');
-  const path    = await import('path');
-  const os      = await import('os');
-  const { Worker } = await import('worker_threads');
 
   //Read data.json
   const dataPath = path.resolve('data.json');

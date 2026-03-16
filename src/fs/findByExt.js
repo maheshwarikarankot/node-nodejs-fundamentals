@@ -1,15 +1,11 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const findByExt = async () => {
   // Write your code here
   // Recursively find all files with specific extension
   // Parse --ext CLI argument (default: .txt)
-  const workspacePath = __dirname;
+  const workspacePath = path.join(process.cwd(), 'workspace');
   
   // Check if workspace exists
   try {

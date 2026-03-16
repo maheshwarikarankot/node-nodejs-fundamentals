@@ -1,12 +1,12 @@
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+
 const verify = async () => {
   // Write your code here
   // Read checksums.json
   // Calculate SHA256 hash using Streams API
   // Print result: filename — OK/FAIL
-
-  const fs = await import('fs');
-  const path = await import('path');
-  const crypto = await import('crypto');
 
   const checksumsPath = path.resolve('checksums.json');
 

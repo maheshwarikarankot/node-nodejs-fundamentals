@@ -1,15 +1,15 @@
+import fs from 'fs';
+import fsp from 'fs/promises';
+import path from 'path';
+import zlib from 'zlib';
+import stream from 'stream';
+
 const compressDir = async () => {
   // Write your code here
   // Read all files from workspace/toCompress/
   // Compress entire directory structure into archive.br
   // Save to workspace/compressed/
   // Use Streams API
-
-  const fs     = await import('fs');
-  const fsp    = await import('fs/promises');
-  const path   = await import('path');
-  const zlib   = await import('zlib');
-  const stream = await import('stream');
 
   const sourceDir  = path.resolve('workspace/toCompress');
   const outputDir  = path.resolve('workspace/compressed');

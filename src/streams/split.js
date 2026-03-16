@@ -1,11 +1,11 @@
+import fs from 'fs';
+import path from 'path';
+
 const split = async () => {
   // Write your code here
   // Read source.txt using Readable Stream
   // Split into chunk_1.txt, chunk_2.txt, etc.
   // Each chunk max N lines (--lines CLI argument, default: 10)
-
-  const fs   = await import('fs');
-  const path = await import('path');
 
   //Get --lines argument from CLI, default to 10
   const args     = process.argv.slice(2);

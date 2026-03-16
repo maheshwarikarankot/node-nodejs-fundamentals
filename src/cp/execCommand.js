@@ -1,3 +1,5 @@
+import { spawn } from 'child_process';
+
 const execCommand = () => {
   // Write your code here
   // Take command from CLI argument
@@ -6,41 +8,34 @@ const execCommand = () => {
   // Pass environment variables
   // Exit with same code as child
 
-  import('child_process').then(({ spawn }) => {
-    // Step 1: Get the full command string from CLI argument
-    // e.g. node execCommand.js "ls -la"  → process.argv[2] = "ls -la"
-    const fullCommand = process.argv[2];
+  // Step 1: Get the full command string from CLI argument
+  const fullCommand = process.argv[2];
 
-    if (!fullCommand) {
-      console.error('Please provide a command. e.g. node execCommand.js "ls -la"');
-      process.exit(1);
-    }
+  if (!fullCommand) {
+    process.exit(1);
+  }
 
-    //Split command into name + arguments
-    const [cmd, ...args] = fullCommand.split(' ');
+  //Split command into name + arguments
+  const parts = fullCommand.split(' ');
+  const cmd = parts[0];
+  const args = parts.slice(1);
 
-    //Spawn the child process
-    const child = spawn(cmd, args, {
-      env:   process.env, // pass all parent environment variables to child
-      shell: false,       // run directly, no shell wrapper needed
-    });
+  //Spawn the child process
+  const child = spawn(cmd, args, {
+    env:   process.env, // pass all parent environment variables to child
+    stdio: 'inherit',   // inherit parent's stdin, stdout, stderr
+    shell: false,       // run directly, no shell wrapper needed
+  });
 
-    //Pipe child stdout → parent stdout
-    child.stdout.pipe(process.stdout);
+  //When child exits, exit parent with the same exit code
+  child.on('close', (code) => {
+    process.exit(code);
+  });
 
-    //Pipe child stderr → parent stderr
-    child.stderr.pipe(process.stderr);
-
-    //When child exits, exit parent with the same exit code
-    child.on('close', (code) => {
-      process.exit(code);
-    });
-
-    //Handle spawn errors (e.g. command not found)
-    child.on('error', (err) => {
-      console.error(`Failed to start command: ${err.message}`);
-      process.exit(1);
-    });
+  //Handle spawn errors (e.g. command not found)
+  child.on('error', (err) => {
+    console.error(`Failed to start command: ${err.message}`);
+    process.exit(1);
   });
 };
 

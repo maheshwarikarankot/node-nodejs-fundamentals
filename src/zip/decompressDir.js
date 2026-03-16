@@ -1,13 +1,13 @@
+import fs from 'fs';
+import fsp from 'fs/promises';
+import path from 'path';
+import zlib from 'zlib';
+
 const decompressDir = async () => {
   // Write your code here
   // Read archive.br from workspace/compressed/
   // Decompress and extract to workspace/decompressed/
   // Use Streams API
-
-  const fs   = await import('fs');
-  const fsp  = await import('fs/promises');
-  const path = await import('path');
-  const zlib = await import('zlib');
 
   const compressedDir = path.resolve('workspace/compressed');
   const archiveFile   = path.resolve('workspace/compressed/archive.br');

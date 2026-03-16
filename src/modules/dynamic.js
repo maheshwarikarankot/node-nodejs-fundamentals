@@ -1,12 +1,12 @@
+import path from 'path';
+import { pathToFileURL } from 'url';
+
 const dynamic = async () => {
   // Write your code here
   // Accept plugin name as CLI argument
   // Dynamically import plugin from plugins/ directory
   // Call run() function and print result
   // Handle missing plugin case
-
-  const path = await import('path');
-  const { pathToFileURL } = await import('url');
 
   const pluginName = process.argv[2];
 

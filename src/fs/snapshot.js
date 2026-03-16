@@ -1,9 +1,5 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const snapshot = async () => {
   // Write your code heres
@@ -11,7 +7,7 @@ const snapshot = async () => {
   // Write snapshot.json with:
   // - rootPath: absolute path to workspace
   // - entries: flat array of relative paths and metadata
-  const workspacePath = __dirname ; // Current directory
+  const workspacePath = path.join(process.cwd(), 'workspace');
 
     // Check if workspace exists
   try {

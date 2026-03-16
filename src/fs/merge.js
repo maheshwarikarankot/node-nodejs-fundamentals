@@ -1,9 +1,5 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const merge = async () => {
   // Write your code here
@@ -11,7 +7,7 @@ const merge = async () => {
   // Optional: support --files filename1,filename2,... to merge specific files in provided order
   // Concatenate content and write to workspace/merged.txt
   
-  const workspacePath = __dirname; // Current directory
+  const workspacePath = path.join(process.cwd(), 'workspace');
   const partsPath = path.join(workspacePath, 'parts');
   const mergedPath = path.join(workspacePath, 'merged.txt');
   

@@ -1,9 +1,5 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const restore = async () => {
   // Write your code here
@@ -11,7 +7,7 @@ const restore = async () => {
   // Treat snapshot.rootPath as metadata only
   // Recreate directory/file structure in workspace_restored
   
-  const workspacePath = __dirname; // Current directory
+  const workspacePath = path.join(process.cwd(), 'workspace');
   const snapshotPath = path.join(workspacePath, 'snapshot.json');
   const restorePath = path.join(workspacePath, 'workspace_restored');
   
